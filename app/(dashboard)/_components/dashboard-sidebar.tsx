@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { PlusIcon } from "lucide-react";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +19,10 @@ import SignInPrompt from "./signin-prompt";
 import SidebarFooterContent from "./sidebar-footer-content";
 
 const DashboardSidebar = () => {
-  const userId = "123466";
-  const isSignedIn = true;
-  const isLoaded = true;
+  const { isLoaded, isSignedIn, user } = useUser();
+  const userId = user?.id || null;
+  const { signOut } = useAuth();
+
   return (
     <>
       <Sidebar className="px-2 !bg-[rgb(33,33,33)]">
@@ -49,19 +51,23 @@ const DashboardSidebar = () => {
           {userId && <JobSidebarList userId={userId} />}
 
           {/* {Sign In Prompt} */}
-          {isSignedIn && isLoaded ? <SignInPrompt /> : null}
+          {!isSignedIn && isLoaded ? <SignInPrompt /> : null}
         </SidebarContent>
         <SidebarFooter>
           <SidebarFooterContent
             isLoaded={isLoaded}
-            isSignedIn={isSignedIn}
-            userName={"Hamiid"}
-            emailAddress={"abc@gmail.com"}
-            userInitial={"H"}
+            isSignedIn={isSignedIn || false}
+            userName={user?.fullName || ""}
+            emailAddress={user?.primaryEmailAddress?.emailAddress || ""}
+            userInitial={user?.firstName?.charAt(0) || ""}
             credits={10}
             loadingCredits={false}
             onUpgradeClick={() => {}}
-            onSignOut={() => {}}
+            onSignOut={() => {
+              signOut({
+                redirectUrl: "/",
+              });
+            }}
           />
         </SidebarFooter>
       </Sidebar>

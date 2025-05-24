@@ -1,16 +1,23 @@
 "use client";
+import { useUser } from "@clerk/nextjs";
+import { Loader, SendIcon } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { toast } from "sonner";
+
 import {
   AutosizeTextarea,
   AutosizeTextAreaRef,
 } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
-import { Loader, SendIcon } from "lucide-react";
-import React, { useRef, useState } from "react";
+import useSignInModal from "@/hooks/use-signin-modal";
 
 const JobInfoForm = () => {
+  const { isSignedIn, user } = useUser();
   const textareaRef = useRef<AutosizeTextAreaRef>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { handleOpen: signInModalOpen } = useSignInModal();
 
   const handleChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -20,6 +27,16 @@ const JobInfoForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
+    if (!isSignedIn || !user) {
+      signInModalOpen();
+      return;
+    }
+
+    if (!jobDescription.trim()) {
+      toast.error("Please enter a job description");
+      return;
+    }
   };
 
   return (
@@ -44,7 +61,11 @@ const JobInfoForm = () => {
         </div>
 
         <div className="flex w-full items-center justify-end px-5 py-2">
-          <Button size="icon" onClick={handleSubmit}>
+          <Button
+            size="icon"
+            onClick={handleSubmit}
+            disabled={isSubmitting || !jobDescription.trim()}
+          >
             {isSubmitting ? (
               <Loader className="w-4 h-4 animate-spin" />
             ) : (

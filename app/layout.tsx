@@ -1,6 +1,12 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Onest } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+
 import "./globals.css";
+import ToastProvider from "@/providers/toast-provider";
+import FallbackLoader from "@/components/fallback-loader";
 
 const onest = Onest({
   subsets: ["latin"],
@@ -17,8 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${onest.className}} antialiased`}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${onest.className}} antialiased`}>
+          <Suspense fallback={<FallbackLoader />}>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </Suspense>
+          <ToastProvider />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
