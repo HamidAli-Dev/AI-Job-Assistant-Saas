@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+.bg-sidebar {
+  background-color: rgb(33, 33, 33)
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
