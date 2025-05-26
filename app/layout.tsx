@@ -7,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import ToastProvider from "@/providers/toast-provider";
 import FallbackLoader from "@/components/fallback-loader";
+import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
 
 const onest = Onest({
   subsets: ["latin"],
@@ -26,10 +27,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${onest.className}} antialiased`}>
-          <Suspense fallback={<FallbackLoader />}>
-            <NuqsAdapter>{children}</NuqsAdapter>
-          </Suspense>
-          <ToastProvider />
+          <ConvexClientProvider>
+            <Suspense fallback={<FallbackLoader />}>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </Suspense>
+            <ToastProvider />
+          </ConvexClientProvider>
         </body>
       </html>
     </ClerkProvider>
