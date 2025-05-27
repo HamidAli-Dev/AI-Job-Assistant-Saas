@@ -3,6 +3,10 @@ import { useUser } from "@clerk/nextjs";
 import { Loader, SendIcon } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { ConvexError } from "convex/values";
 
 import {
   AutosizeTextarea,
@@ -12,12 +16,15 @@ import { Button } from "@/components/ui/button";
 import useSignInModal from "@/hooks/use-signin-modal";
 
 const JobInfoForm = () => {
+  const router = useRouter();
   const { isSignedIn, user } = useUser();
   const textareaRef = useRef<AutosizeTextAreaRef>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { handleOpen: signInModalOpen } = useSignInModal();
+
+  const createJob = useMutation(api.job.createJob);
 
   const handleChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -36,6 +43,28 @@ const JobInfoForm = () => {
     if (!jobDescription.trim()) {
       toast.error("Please enter a job description");
       return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await createJob({
+        userId: user.id,
+        jobDescription: jobDescription,
+      });
+
+      if (!res.data && res.requiresUpgrade) {
+        // TODO: Show upgrade modal
+        return;
+      }
+
+      router.push(`/job/${res.data}`);
+    } catch (error) {
+      const errorMessage =
+        error instanceof ConvexError && error.data.message
+          ? error.data.message
+          : "Failed to create job. Please try again.";
+
+      toast.error(errorMessage);
     }
   };
 

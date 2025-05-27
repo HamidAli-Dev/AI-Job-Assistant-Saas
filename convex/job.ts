@@ -1,6 +1,6 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 import { jobStatus } from "@/lib/constants";
 import { CREDIT_COST, FREE_TIER_CREDITS } from "@/lib/api-limits";
@@ -59,8 +59,48 @@ export const createJob = mutation({
       credit: CREDIT_COST.JOB_CREATION,
     });
 
-    // TODO: AI processing
+    //  AI processing
+    await ctx.scheduler.runAfter(0, internal.action.processJobWithAI, {
+      jobId: jobId,
+      userId: args.userId,
+      jobDescription: args.jobDescription,
+    });
 
     return { data: jobId, success: true };
+  },
+});
+
+export const updateJob = mutation({
+  args: {
+    jobId: v.id("jobs"),
+    jobTitle: v.optional(v.string()),
+    processedDescription: v.optional(v.string()),
+    htmlFormatDescription: v.optional(v.string()),
+    status: v.optional(
+      v.union(
+        v.literal(jobStatus.PROCESSING),
+        v.literal(jobStatus.READY),
+        v.literal(jobStatus.FAILED)
+      )
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { jobId, ...rest } = args;
+    await ctx.db.patch(jobId, {
+      ...rest,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+export const getAllJobs = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("jobs")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
   },
 });
