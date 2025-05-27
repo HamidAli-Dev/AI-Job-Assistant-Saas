@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.0",
+    "@langchain/core": "^0.3.57",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-popover": "^1.1.14",
@@ -19,6 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.24.1",
+    "langchain": "^0.3.27",
     "lucide-react": "^0.511.0",
     "next": "15.3.1",
     "next-themes": "^0.4.6",
