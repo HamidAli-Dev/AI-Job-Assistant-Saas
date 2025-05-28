@@ -5,6 +5,17 @@
   background-color: rgb(33, 33, 33)
 }
 
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, and Opera */
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
