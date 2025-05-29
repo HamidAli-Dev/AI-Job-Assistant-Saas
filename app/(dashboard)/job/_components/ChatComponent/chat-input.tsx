@@ -12,6 +12,7 @@ import { Lightbulb, Loader, SendIcon } from "lucide-react";
 import JobInsightSuggest from "./job-insight-suggest";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 
 interface ChatInputProps {
   jobId: string;
@@ -22,6 +23,7 @@ interface ChatInputProps {
 const ChatInput = ({ jobId, isDisabled, userId }: ChatInputProps) => {
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { openModal } = useUpgradeModal();
 
   const textAreaRef = useRef<AutosizeTextAreaRef>(null);
 
@@ -53,7 +55,8 @@ const ChatInput = ({ jobId, isDisabled, userId }: ChatInputProps) => {
         error instanceof ConvexError &&
         error?.data?.type === "INSUFFICIENT_CREDITS"
       ) {
-        //TODO: Open Buy Credit dialog
+        // Open Buy Credit dialog
+        openModal();
       }
       toast.error(errorMessage);
     } finally {

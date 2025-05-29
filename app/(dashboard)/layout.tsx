@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardSidebar from "./_components/dashboard-sidebar";
 import SignInModal from "@/components/signin-modal";
+import UpgradeModal from "@/components/upgrade-modal";
 
 const DashboardLayout = async ({
   children,
@@ -25,6 +26,7 @@ const DashboardLayout = async ({
         <main className="flex-1 w-full">{children}</main>
       </SidebarProvider>
       <SignInModal />
+      <UpgradeModal />
     </>
   );
 };

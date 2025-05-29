@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
 import useSignInModal from "@/hooks/use-signin-modal";
+import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 
 const JobInfoForm = () => {
   const router = useRouter();
@@ -23,6 +24,7 @@ const JobInfoForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { handleOpen: signInModalOpen } = useSignInModal();
+  const { openModal } = useUpgradeModal();
 
   const createJob = useMutation(api.job.createJob);
 
@@ -53,7 +55,8 @@ const JobInfoForm = () => {
       });
 
       if (!res.data && res.requiresUpgrade) {
-        // TODO: Show upgrade modal
+        // Show upgrade modal
+        openModal();
         return;
       }
 

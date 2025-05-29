@@ -17,6 +17,8 @@ import type * as action from "../action.js";
 import type * as creditManagement from "../creditManagement.js";
 import type * as job from "../job.js";
 import type * as jobInsightConversation from "../jobInsightConversation.js";
+import type * as paymentAction from "../paymentAction.js";
+import type * as payments from "../payments.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +33,8 @@ declare const fullApi: ApiFromModules<{
   creditManagement: typeof creditManagement;
   job: typeof job;
   jobInsightConversation: typeof jobInsightConversation;
+  paymentAction: typeof paymentAction;
+  payments: typeof payments;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

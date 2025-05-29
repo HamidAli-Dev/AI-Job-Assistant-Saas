@@ -17,11 +17,22 @@ import {
 import JobSidebarList from "./job-sidebar-list";
 import SignInPrompt from "./signin-prompt";
 import SidebarFooterContent from "./sidebar-footer-content";
+import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const DashboardSidebar = () => {
   const { isLoaded, isSignedIn, user } = useUser();
+  const { openModal } = useUpgradeModal();
   const userId = user?.id || null;
   const { signOut } = useAuth();
+
+  const apiLimits = useQuery(api.creditManagement.getUserCredits, {
+    userId: user?.id || "",
+  });
+
+  const loadingCredits = apiLimits === undefined;
+  const credits = apiLimits?.credits !== undefined ? apiLimits?.credits : 0;
 
   return (
     <>
@@ -60,9 +71,9 @@ const DashboardSidebar = () => {
             userName={user?.fullName || ""}
             emailAddress={user?.primaryEmailAddress?.emailAddress || ""}
             userInitial={user?.firstName?.charAt(0) || ""}
-            credits={10}
-            loadingCredits={false}
-            onUpgradeClick={() => {}}
+            credits={credits}
+            loadingCredits={loadingCredits}
+            onUpgradeClick={openModal}
             onSignOut={() => {
               signOut({
                 redirectUrl: "/",

@@ -6,3 +6,7 @@ export const CREDIT_COST = {
 } as const;
 
 export const PRICE_PER_CREDIT = 0.1;
+
+export const CREDIT_DEFAULT_VALUE = 100;
+export const CREDIT_MIN_LIMIT = 10;
+export const CREDIT_MAX_LIMIT = 300;
